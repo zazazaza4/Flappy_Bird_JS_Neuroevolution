@@ -1,10 +1,12 @@
 const panSpeed = 8;
 const gravity = 3;
+let score = 0;
 
 let player;
-let pipes;
-let pipes2;
+let pipe1;
+let pipe2;
 let ground;
+
 let birdSprite;
 let bg;
 
@@ -14,16 +16,25 @@ function preload() {
 }
 
 function setup() {
-  createCanvas(600, 800);
-  pipes = new PipePair();
-  pipes2 = new PipePair();
+  window.canvas = createCanvas(600, 800);
+  pipe1 = new PipePair();
+  pipe2 = new PipePair();
   ground = new Ground();
   player = new Player();
 }
 
 function draw() {
   background(bg);
-  player.update(pipes, pipes2, ground);
+  player.update(pipe1, pipe2, ground);
+  pipe1.update();
+  pipe2.update();
+
+  if (pipe1.offScreen()) {
+    pipe1 = new PipePair();
+  }
+  if (pipe2.offScreen()) {
+    pipe2 = new PipePair();
+  }
 }
 
 function keyPressed() {

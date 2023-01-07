@@ -1,6 +1,5 @@
 class Player {
   constructor(velX = 8, size = 40) {
-    console.log(canvas.height);
     this.x = 100;
     this.y = 200;
     this.velY = 0;
