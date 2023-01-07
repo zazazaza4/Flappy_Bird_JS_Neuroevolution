@@ -5,10 +5,12 @@ let player;
 let pipes;
 let pipes2;
 let ground;
-var birdSprite;
+let birdSprite;
+let bg;
 
 function preload() {
   birdSprite = loadImage("../assets/images/bird.png");
+  bg = loadImage("../assets/images/background.png");
 }
 
 function setup() {
@@ -20,7 +22,7 @@ function setup() {
 }
 
 function draw() {
-  background(220);
+  background(bg);
   player.update(pipes, pipes2, ground);
 }
 
