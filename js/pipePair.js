@@ -1,17 +1,32 @@
 class PipePair {
-  constructor(firstPipe) {
+  constructor(firstPipe = true, addPosX = 0) {
+    this._minDistFromEdge = 50;
+    this._maxDistFromEdge = 500;
     this.gap = 160;
     this.isPassed = false;
+    if (firstPipe) {
+      this.topHeight = (canvas.height - 30) / 2 - this.gap;
+    } else {
+      let randomValue = random(this._minDistFromEdge, this._maxDistFromEdge);
+      this.topHeight = (canvas.height + randomValue) / 2 - this.gap;
+    }
+    this.bottomHeight = canvas.height - this.topHeight - this.gap;
 
-    this.topHeight = (canvas.height - 30) / 1.5;
-    this.bottomHeight = canvas.height - this.topHeight / 2 - this.gap;
-    this.bottomPipe = new Pipe(false, this.bottomHeight);
-    this.topPipe = new Pipe(true, this.topHeight);
+    this.bottomPipe = new Pipe(false, this.bottomHeight, addPosX);
+    this.topPipe = new Pipe(true, this.topHeight, addPosX);
   }
 
-  update() {
-    this.bottomPipe.update();
-    this.topPipe.update();
+  update(isMove) {
+    let speed = isMove ? 5 : 0;
+    this.bottomPipe.update(speed);
+    this.topPipe.update(speed);
+  }
+
+  isCollisionPlayer(player) {
+    return (
+      this.bottomPipe.isCollisionPlayer(player) ||
+      this.topPipe.isCollisionPlayer(player)
+    );
   }
 
   playerPassed(playerX) {
