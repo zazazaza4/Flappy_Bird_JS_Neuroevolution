@@ -29,30 +29,17 @@ class Player {
     pop();
   }
 
-  update(pipes1, pipes2, ground) {
+  update() {
     this.velY += gravity / 2;
     if (!this.dead) {
       this.velY = constrain(this.velY, -1000, 25);
     } else {
       this.velY = constrain(this.velY, -1000, 40);
     }
-    this.y += this.velY;
-    this.checkCollisions();
-    this.draw();
-  }
-
-  checkCollisions(pipes1, pipes2, ground) {
-    if (!this.dead) {
+    if (this.y < canvas.height - 50) {
+      this.y += this.velY;
     }
-    // if (this.pipes1.isCollisionPlayer(this)) {
-    //   this.dead = true;
-    // }
-    // if (this.pipes2.isCollisionPlayer(this)) {
-    //   this.dead = true;
-    // }
-    // if (this.ground.isCollisionPlayer(this)) {
-    //   this.dead = true;
-    // }
+    this.draw();
   }
 
   flap() {
