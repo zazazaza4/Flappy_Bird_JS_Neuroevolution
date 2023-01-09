@@ -52,4 +52,12 @@ class PipePair {
     this.bottomPipe.posX = x;
     this.topPipe.posX = x;
   }
+
+  get x() {
+    return this.topPipe.posX;
+  }
+
+  get width() {
+    return this.topPipe.width;
+  }
 }
