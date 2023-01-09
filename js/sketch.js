@@ -20,12 +20,16 @@ let groundSprite;
 let pipeBottomSprite;
 let pipeTopSprite;
 
+let font;
+
 function preload() {
   birdSprite = loadImage("../assets/images/bird.png");
   groundSprite = loadImage("../assets/images/ground-piece.png");
   bg = loadImage("../assets/images/background.png");
   pipeBottomSprite = loadImage("../assets/images/pipe-bottom.png");
   pipeTopSprite = loadImage("../assets/images/pipe-top.png");
+
+  font = loadFont("../assets/font2.otf");
 }
 
 function init() {
@@ -47,6 +51,10 @@ function init() {
 function setup() {
   window.canvas = createCanvas(600, 800);
   tf.setBackend("cpu");
+  textSize(width / 6);
+  textAlign(CENTER, CENTER);
+  textFont(font);
+
   init();
 }
 
@@ -70,6 +78,8 @@ function draw() {
   if (pipe2.offScreen()) {
     pipe2 = new PipePair(false);
   }
+  fill(250);
+  text(score, 40, 40);
 }
 
 function playNeuralNetwork() {
@@ -122,13 +132,14 @@ function keyPressed() {
     case "ArrowUp":
       if (player && !player.dead) {
         player.flap();
-      } else {
-        init();
       }
       break;
     case "s":
       let bird = birds[0];
-
+    case "p":
+      if (player && player.dead) {
+        init();
+      }
     default:
       break;
   }
