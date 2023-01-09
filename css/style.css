@@ -1,9 +1,19 @@
 body {
     padding: 0;
     margin: 0;
-    background-color: #1b1b1b;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: black;
+    height: 100vh;
+    zoom: 85%;
+}
+
+main {
+    height: 100vh;
 }
 
 canvas {
     display: block;
+
 }
