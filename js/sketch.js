@@ -1,39 +1,117 @@
 const panSpeed = 8;
 const gravity = 3;
 let score = 0;
+const WhoIsPlaying = "Player"; // Player || NeuralNetwork
 
 let player;
 let pipe1;
 let pipe2;
 let ground;
+let isMove = true;
+
+const TOTAL = 60;
+let birds = [];
+let birdsAreDead = 0;
+let savedBirds = [];
 
 let birdSprite;
 let bg;
+let groundSprite;
+let pipeBottomSprite;
+let pipeTopSprite;
 
 function preload() {
   birdSprite = loadImage("../assets/images/bird.png");
+  groundSprite = loadImage("../assets/images/ground-piece.png");
   bg = loadImage("../assets/images/background.png");
+  pipeBottomSprite = loadImage("../assets/images/pipe-bottom.png");
+  pipeTopSprite = loadImage("../assets/images/pipe-top.png");
+}
+
+function init() {
+  pipe1 = new PipePair(true);
+  pipe2 = new PipePair(false, (canvas.width + 100) / 2);
+  ground = new Ground();
+  isMove = true;
+
+  if (WhoIsPlaying === "Player") {
+    player = new Player();
+  } else {
+    for (let i = 0; i < TOTAL; i++) {
+      birds[i] = new Player(true);
+    }
+  }
+  score = 0;
 }
 
 function setup() {
   window.canvas = createCanvas(600, 800);
-  pipe1 = new PipePair();
-  pipe2 = new PipePair();
-  ground = new Ground();
-  player = new Player();
+  tf.setBackend("cpu");
+  init();
 }
 
 function draw() {
   background(bg);
-  player.update(pipe1, pipe2, ground);
-  pipe1.update();
-  pipe2.update();
+
+  pipe1.update(isMove);
+  pipe2.update(isMove);
+  ground.update(isMove);
+
+  if (WhoIsPlaying === "Player") {
+    playHuman();
+  } else {
+    playNeuralNetwork();
+    isMove = TOTAL !== birdsAreDead;
+  }
 
   if (pipe1.offScreen()) {
-    pipe1 = new PipePair();
+    pipe1 = new PipePair(false);
   }
   if (pipe2.offScreen()) {
-    pipe2 = new PipePair();
+    pipe2 = new PipePair(false);
+  }
+}
+
+function playNeuralNetwork() {
+  for (let i = 0; i < birds.length; i++) {
+    if (
+      !birds[i].dead &&
+      (pipe1.isCollisionPlayer(birds[i]) ||
+        pipe2.isCollisionPlayer(birds[i]) ||
+        ground.isCollisionPlayer(birds[i]))
+    ) {
+      birds[i].dead = true;
+      birdsAreDead++;
+    }
+    birds[i].think([pipe1, pipe2]);
+    birds[i].update();
+
+    if (pipe1.playerPassed(birds[i].x)) {
+      score++;
+    }
+
+    if (pipe2.playerPassed(birds[i].x)) {
+      score++;
+    }
+  }
+}
+function playHuman() {
+  if (
+    pipe1.isCollisionPlayer(player) ||
+    pipe2.isCollisionPlayer(player) ||
+    ground.isCollisionPlayer(player)
+  ) {
+    player.dead = true;
+    isMove = false;
+  }
+  player.update();
+
+  if (pipe1.playerPassed(player.x)) {
+    score++;
+  }
+
+  if (pipe2.playerPassed(player.x)) {
+    score++;
   }
 }
 
@@ -42,8 +120,14 @@ function keyPressed() {
     case "w":
     case " ":
     case "ArrowUp":
-      player.flap();
+      if (player && !player.dead) {
+        player.flap();
+      } else {
+        init();
+      }
       break;
+    case "s":
+      let bird = birds[0];
 
     default:
       break;
