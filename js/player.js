@@ -64,12 +64,7 @@ class Player {
       if (brain instanceof NeuralNetwork) {
         this.brain = brain.copy();
       } else {
-        const brainLocalStorage = getDataFromLocalStorage("brain");
-        if (brainLocalStorage) {
-          this.brain = brainLocalStorage;
-        } else {
-          this.brain = new NeuralNetwork(5, 8, 2);
-        }
+        this.brain = new NeuralNetwork(5, 8, 2);
       }
     }
   }
