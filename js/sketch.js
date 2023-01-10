@@ -1,15 +1,15 @@
 const panSpeed = 8;
 const gravity = 3;
 let score = 0;
-const WhoIsPlaying = "Player"; // Player || NeuralNetwork
-
+let WhoIsPlaying = "Player"; // Player || NeuralNetwork
+const WhoIsPlayingEl = document.getElementById("choose-player");
 let player;
 let pipe1;
 let pipe2;
 let ground;
 let isMove = true;
 
-const TOTAL = 50;
+const TOTAL = 100;
 let birds = [];
 let birdsAreDead = 0;
 let savedBirds = [];
@@ -149,7 +149,9 @@ function keyPressed() {
       break;
     case "s":
       let bird = birds[0];
-      saveInLocalStorage("brain", bird.brain);
+      if (bird) {
+        saveJSON(bird.brain, "brain.json");
+      }
     case "p":
       init(true);
 
@@ -157,3 +159,8 @@ function keyPressed() {
       break;
   }
 }
+
+WhoIsPlayingEl.addEventListener("change", (e) => {
+  WhoIsPlaying = e.target.value;
+  init();
+});
