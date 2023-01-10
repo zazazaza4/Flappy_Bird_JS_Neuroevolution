@@ -139,6 +139,7 @@ function playHuman() {
 }
 
 function keyPressed() {
+  console.log(key === " ");
   switch (key) {
     case "w":
     case " ":
@@ -153,6 +154,7 @@ function keyPressed() {
         saveJSON(bird.brain, "brain.json");
       }
       break;
+    case "Shift":
     case "p":
       init(true);
       break;
