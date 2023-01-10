@@ -9,7 +9,7 @@ let pipe2;
 let ground;
 let isMove = true;
 
-const TOTAL = 60;
+const TOTAL = 50;
 let birds = [];
 let birdsAreDead = 0;
 let savedBirds = [];
@@ -32,17 +32,22 @@ function preload() {
   font = loadFont("../assets/font2.otf");
 }
 
-function init() {
+function init(isNextGenerate) {
   pipe1 = new PipePair(true);
   pipe2 = new PipePair(false, (canvas.width + 100) / 2);
   ground = new Ground();
   isMove = true;
+  birdsAreDead = 0;
 
   if (WhoIsPlaying === "Player") {
     player = new Player();
   } else {
-    for (let i = 0; i < TOTAL; i++) {
-      birds[i] = new Player(true);
+    if (!isNextGenerate) {
+      for (let i = 0; i < TOTAL; i++) {
+        birds[i] = new Player(true);
+      }
+    } else {
+      nextGeneration();
     }
   }
   score = 0;
@@ -69,7 +74,11 @@ function draw() {
     playHuman();
   } else {
     playNeuralNetwork();
-    isMove = TOTAL !== birdsAreDead;
+    const isAllBirdAraDead = TOTAL > birdsAreDead;
+    isMove = isAllBirdAraDead;
+    if (!isAllBirdAraDead) {
+      init(true);
+    }
   }
 
   if (pipe1.offScreen()) {
@@ -79,32 +88,36 @@ function draw() {
     pipe2 = new PipePair(false);
   }
   fill(250);
-  text(score, 40, 40);
+  text(score, 60, 40);
 }
 
 function playNeuralNetwork() {
   for (let i = 0; i < birds.length; i++) {
     if (
-      !birds[i].dead &&
-      (pipe1.isCollisionPlayer(birds[i]) ||
-        pipe2.isCollisionPlayer(birds[i]) ||
-        ground.isCollisionPlayer(birds[i]))
+      pipe1.isCollisionPlayer(birds[i]) ||
+      pipe2.isCollisionPlayer(birds[i]) ||
+      ground.isCollisionPlayer(birds[i]) ||
+      birds[i].isCollisionSky()
     ) {
       birds[i].dead = true;
+      const bird = birds.splice(i, 1)[0];
+      savedBirds.push(bird);
       birdsAreDead++;
-    }
-    birds[i].think([pipe1, pipe2]);
-    birds[i].update();
+    } else {
+      birds[i].think([pipe1, pipe2]);
+      birds[i].update();
 
-    if (pipe1.playerPassed(birds[i].x)) {
-      score++;
-    }
+      if (pipe1.playerPassed(birds[i].x)) {
+        score++;
+      }
 
-    if (pipe2.playerPassed(birds[i].x)) {
-      score++;
+      if (pipe2.playerPassed(birds[i].x)) {
+        score++;
+      }
     }
   }
 }
+
 function playHuman() {
   if (
     pipe1.isCollisionPlayer(player) ||
@@ -136,10 +149,10 @@ function keyPressed() {
       break;
     case "s":
       let bird = birds[0];
+      saveInLocalStorage("brain", bird.brain);
     case "p":
-      if (player && player.dead) {
-        init();
-      }
+      init(true);
+
     default:
       break;
   }
