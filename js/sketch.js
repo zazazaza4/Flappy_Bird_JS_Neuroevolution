@@ -139,7 +139,6 @@ function playHuman() {
 }
 
 function keyPressed() {
-  console.log(key === " ");
   switch (key) {
     case "w":
     case " ":
