@@ -1,5 +1,5 @@
 class Player {
-  constructor(brain = false, velX = 8, size = 40) {
+  constructor(brain = null, velX = 8, size = 40) {
     this.x = 100;
     this.y = 200;
     this.velY = 0;
@@ -7,7 +7,8 @@ class Player {
     this.size = size;
     this.dead = false;
     this.fallRotation = -PI / 6;
-    this.score;
+    this.score = 0;
+    this.fitness = 0;
 
     this.initBrain(brain);
   }
@@ -36,14 +37,19 @@ class Player {
     this.velY += gravity / 2;
     if (!this.dead) {
       this.velY = constrain(this.velY, -1000, 25);
+      this.score++;
     } else {
       this.velY = constrain(this.velY, -1000, 40);
     }
     if (this.y < canvas.height - 50) {
       this.y += this.velY;
     }
+
     this.draw();
-    this.score++;
+  }
+
+  isCollisionSky() {
+    return this.y < 0;
   }
 
   flap() {
@@ -55,8 +61,16 @@ class Player {
   // Neural Network
   initBrain(brain) {
     if (brain) {
-      this.brain = new NeuralNetwork(5, 8, 2);
-      this.fitness = 0;
+      if (brain instanceof NeuralNetwork) {
+        this.brain = brain.copy();
+      } else {
+        const brainLocalStorage = getDataFromLocalStorage("brain");
+        if (brainLocalStorage) {
+          this.brain = brainLocalStorage;
+        } else {
+          this.brain = new NeuralNetwork(5, 8, 2);
+        }
+      }
     }
   }
 
@@ -87,12 +101,12 @@ class Player {
     const closest = this._findClosestPipe(pipes);
 
     inputs[0] = this.y / height;
-    inputs[1] = closest.topHeight / height;
-    inputs[2] = closest.bottomHeight / height;
-    inputs[3] = closest.x / height;
+    inputs[1] = closest.topPipe.bottomY / height;
+    inputs[2] = closest.bottomPipe.topY / height;
+    inputs[3] = closest.x / width;
     inputs[4] = this.velY / 10;
-    let output = this.brain.predict(inputs);
 
+    let output = this.brain.predict(inputs);
     if (output[0] > output[1]) {
       this.flap();
     }
