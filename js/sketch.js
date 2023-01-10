@@ -152,10 +152,9 @@ function keyPressed() {
       if (bird) {
         saveJSON(bird.brain, "brain.json");
       }
+      break;
     case "p":
       init(true);
-
-    default:
       break;
   }
 }
