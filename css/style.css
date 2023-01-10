@@ -17,3 +17,22 @@ canvas {
     display: block;
 
 }
+
+select {
+    border: 2px solid #ccc;
+    width: 100px;
+}
+
+option,
+select {
+    font-size: 16px;
+}
+
+.absolute {
+    position: absolute;
+    left: 20px;
+}
+
+.players {
+    top: 0;
+}
