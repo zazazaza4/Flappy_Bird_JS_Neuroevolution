@@ -8,14 +8,22 @@
     <title>Flappy_Bird_Clone_JS_2</title>
 </head>
 <body>
+    <div class="absolute players">
+        <form>
+            <select id="choose-player">
+              <option value="Player" label="Player">Player</option>
+              <option value="NeuralNetwork" label="NeuralNetwork">NeuralNetwork</option>
+            </select>
+          </form>
+    </div>
     <main>
+        
     </main>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js"></script>
     <script src="./js/libs/p5.js"></script>
     <script src="./js/libs/p5.min.js"></script>
     <script src="./js/libs/p5.sound.js"></script>
     <script src="./js/generation.js"></script>
-    <script src="./js/localStorage.js"></script>
     <script src="./js/neuralNetwork.js"></script>
     <script src="./js/ground.js"></script>
     <script src="./js/pipe.js"></script>
