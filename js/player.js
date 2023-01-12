@@ -64,9 +64,17 @@ class Player {
       if (brain instanceof NeuralNetwork) {
         this.brain = brain.copy();
       } else {
+        this._loadModel().then((res) => {
+          this.brain = new NeuralNetwork(res, 5, 8, 2);
+        });
         this.brain = new NeuralNetwork(5, 8, 2);
       }
     }
+  }
+
+  async _loadModel() {
+    const model = await tf.loadLayersModel("js/brain/brain.json");
+    return model;
   }
 
   dispose() {
