@@ -9,7 +9,7 @@ let pipe2;
 let ground;
 let isMove = true;
 
-const TOTAL = 100;
+const TOTAL = 50;
 let birds = [];
 let birdsAreDead = 0;
 let savedBirds = [];
@@ -150,7 +150,7 @@ function keyPressed() {
     case "s":
       let bird = birds[0];
       if (bird) {
-        saveJSON(bird.brain, "brain.json");
+        bird.brain.model.save("downloads://brain");
       }
       break;
     case "Shift":
