@@ -88,7 +88,7 @@ function draw() {
     pipe2 = new PipePair(false);
   }
   fill(250);
-  text(score, 60, 40);
+  text(score, 300, 40);
 }
 
 function playNeuralNetwork() {
